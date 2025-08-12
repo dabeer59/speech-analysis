@@ -313,8 +313,8 @@ if uploaded_file is not None:
         st.markdown(analysis_only)
 
 
-=====================================================================================
-=====================================================================================
+#=====================================================================================
+#=====================================================================================
 
 # import io, os, numpy as np, streamlit as st, librosa, torch, soundfile as sf
 # from transformers import AutoProcessor, Wav2Vec2ForCTC
@@ -633,8 +633,8 @@ if uploaded_file is not None:
 #         st.markdown("### 🧠 Gemini Analysis Summary")
 #         st.markdown(analysis_only)
 
-===============================================================================
-===============================================================================
+#===============================================================================
+#===============================================================================
 
 # import io, os, numpy as np, streamlit as st, librosa, torch, soundfile as sf
 # from transformers import AutoProcessor, Wav2Vec2ForCTC
@@ -897,6 +897,7 @@ if uploaded_file is not None:
 #     if analysis_only:
 #         st.markdown("### 🧠 Gemini Analysis Summary")
 #         st.markdown(analysis_only)
+
 
 
 
