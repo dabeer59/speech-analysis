@@ -636,7 +636,10 @@
 #===============================================================================
 #===============================================================================
 
-import io, os, numpy as np, streamlit as st, librosa, torch, soundfile as sf
+import io, os, warnings
+import numpy as np
+import streamlit as st
+import librosa, torch, soundfile as sf
 from transformers import AutoProcessor, Wav2Vec2ForCTC
 from google import genai
 from google.genai import types
@@ -649,6 +652,7 @@ PAGE_TITLE = "🎙️ Urdu Audio Speech Analyzer"
 # Make tiny cloud CPUs happier
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
+os.environ["HF_HOME"] = "/tmp/hf"  # smaller cache on Streamlit Cloud
 try:
     torch.set_num_threads(1)
 except Exception:
@@ -660,9 +664,9 @@ FALLBACK_MODEL_ID = "facebook/mms-300m"
 LANG_CODE = "urd-script_arabic"
 
 # ---------------- API key (hardcoded as requested) ----------------
-api_key = "AIzaSyBEWWn32PxVEaUsoe67GJOEpF4FQT87Kxo"  # ← replace with your real key
+api_key = "REPLACE_WITH_YOUR_GEMINI_API_KEY"
 
-# ---------------- Load speech model ----------------
+# ---------------- Load speech model (lazy + fallback) ----------------
 @st.cache_resource(show_spinner=True)
 def load_model_and_processor():
     def _load(mid):
@@ -670,10 +674,12 @@ def load_model_and_processor():
         model_ = Wav2Vec2ForCTC.from_pretrained(
             mid, target_lang=LANG_CODE, ignore_mismatched_sizes=True
         )
-        try:
-            model_.load_adapter(LANG_CODE)
-        except Exception:
-            pass
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            try:
+                model_.load_adapter(LANG_CODE)
+            except Exception:
+                pass
         model_.eval()
         return processor_, model_
 
@@ -683,8 +689,6 @@ def load_model_and_processor():
         st.warning(f"Falling back to smaller MMS model due to load error: {e}")
         return _load(FALLBACK_MODEL_ID)
 
-processor, model = load_model_and_processor()
-
 # ---------------- Helpers ----------------
 def save_wav_resampled(audio_f32: np.ndarray, sr_in: int, path: str):
     if sr_in != 16000:
@@ -693,6 +697,8 @@ def save_wav_resampled(audio_f32: np.ndarray, sr_in: int, path: str):
     sf.write(path, audio_f32.astype(np.float32), 16000)
 
 def transcribe(wav_path) -> str:
+    # model loads on the first call only
+    processor, model = load_model_and_processor()
     audio, sr = librosa.load(wav_path, sr=16000, mono=True)
     inputs = processor(audio, sampling_rate=sr, return_tensors="pt", padding=True)
     with torch.no_grad():
@@ -748,7 +754,7 @@ After that, provide your analysis in the following format:
         contents=[transcript],
         config=types.GenerateContentConfig(system_instruction=system_instr, temperature=0.0)
     )
-    return getattr(resp, "text", "").strip()
+    return (getattr(resp, "text", None) or "").strip()
 
 def format_transcript_block(text: str) -> str:
     lines = text.split("Person ")
@@ -897,13 +903,3 @@ if uploaded_file is not None:
     if analysis_only:
         st.markdown("### 🧠 Gemini Analysis Summary")
         st.markdown(analysis_only)
-
-
-
-
-
-
-
-
-
-
