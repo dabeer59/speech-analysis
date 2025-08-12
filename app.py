@@ -664,7 +664,7 @@ FALLBACK_MODEL_ID = "facebook/mms-300m"
 LANG_CODE = "urd-script_arabic"
 
 # ---------------- API key (hardcoded as requested) ----------------
-api_key = "REPLACE_WITH_YOUR_GEMINI_API_KEY"
+api_key = "AIzaSyBEWWn32PxVEaUsoe67GJOEpF4FQT87Kxo"
 
 # ---------------- Load speech model (lazy + fallback) ----------------
 @st.cache_resource(show_spinner=True)
@@ -903,3 +903,4 @@ if uploaded_file is not None:
     if analysis_only:
         st.markdown("### 🧠 Gemini Analysis Summary")
         st.markdown(analysis_only)
+
