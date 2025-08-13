@@ -14,8 +14,6 @@ st.set_page_config(page_title="Urdu Speech Analyzer", page_icon="🎙️", layou
 PAGE_TITLE = "🎙️ Urdu Audio & Video Speech Analyzer"
 # model_id = "facebook/mms-1b-l1107"
 # lang_code = "urd-script_arabic"
-model_id = "jonatasgrosman/wav2vec2-large-xlsr-53-urdu"  # smaller + stable
-lang_code = None
 api_key = "AIzaSyBEWWn32PxVEaUsoe67GJOEpF4FQT87Kxo"  # hard-coded as requested
 
 # ---------------- Model ----------------
@@ -907,6 +905,7 @@ if uploaded_file is not None:
 #     if analysis_only:
 #         st.markdown("### 🧠 Gemini Analysis Summary")
 #         st.markdown(analysis_only)
+
 
 
 
