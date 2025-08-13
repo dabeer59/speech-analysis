@@ -12,8 +12,8 @@ from streamlit_mic_recorder import mic_recorder
 # ---------------- Config ----------------
 st.set_page_config(page_title="Urdu Speech Analyzer", page_icon="🎙️", layout="wide")
 PAGE_TITLE = "🎙️ Urdu Audio & Video Speech Analyzer"
-# model_id = "facebook/mms-1b-l1107"
-# lang_code = "urd-script_arabic"
+model_id = "facebook/mms-1b-l1107"
+lang_code = "urd-script_arabic"
 api_key = "AIzaSyBEWWn32PxVEaUsoe67GJOEpF4FQT87Kxo"  # hard-coded as requested
 
 # ---------------- Model ----------------
@@ -905,6 +905,7 @@ if uploaded_file is not None:
 #     if analysis_only:
 #         st.markdown("### 🧠 Gemini Analysis Summary")
 #         st.markdown(analysis_only)
+
 
 
 
